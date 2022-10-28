@@ -1,6 +1,15 @@
 <template>
   <div id="app">
-    <BaseButton>Click</BaseButton>
+    <header>
+      <BaseButton> {{ userData.length ? 'Add / Update' : 'Add Stock' }} </BaseButton>
+      <BaseButton> Refresh </BaseButton>
+    </header>
+
+    <main>
+      <BaseList
+        :list="userData"
+      />
+    </main>
   </div>
 </template>
 
@@ -8,21 +17,33 @@
 
   import { getPortfolioData } from './api-helper/portfolio'
   import BaseButton from '@/components/base/BaseButton.vue'
+  import BaseList from '@/components/base/BaseList.vue'
 
   export default {
     name: "App",
     components: {
-      BaseButton
+      BaseButton,
+      BaseList
     },
     data() {
       return {
-        portfolioData: []
+        portfolioData: [],
+        userData: []
       }
     },
     created() {
+
+      const previouslySelectedItems = localStorage.getItem('previousData')
+
+      if (previouslySelectedItems && previouslySelectedItems.length) {
+        this.userData = JSON.parse(previouslySelectedItems)
+      }
+
+
       getPortfolioData().then(({ data }) => {
         this.portfolioData = data
       })
+
     }
   };
   
@@ -34,9 +55,17 @@
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-    margin-top: 60px;
+    margin-top: 40px;
+    padding: 0 40px;
+
+    header {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 0 20px;
+      border-bottom: 1px solid #e8e8e8;
+  
+    }
   }
 
 </style>

@@ -24,10 +24,10 @@
     computed: {
       buttonColor() {
         const typeColorMap = {
-          primary: 'blue',
-          add: 'green',
-          update: 'yellow',
-          remove: 'red'
+          primary: '#1890ff',
+          add: '#52c41a',
+          update: '#faad14',
+          remove: '#f5222d'
         }
   
         return typeColorMap[this.type]
@@ -44,6 +44,9 @@
     padding: 10px 20px;
     cursor: pointer;
     border-radius: 4px;
+    font-weight: bold;
+    margin-right: 8px;
+    margin-bottom: 12px;
 
     &:hover {
       opacity: 0.8;
