@@ -1,6 +1,6 @@
 <template>
   <div class="modal-container">
-    <div class="modal flex-center">
+    <div class="modal">
      <slot name="default"/>
     </div>
   </div>
@@ -25,16 +25,17 @@
     
     .modal {
       background-color: #fff;
-      height: 300px;
-      width: 400px;
+      height: 700px;
+      min-width: 700px;
       border-radius: 4px;
-      padding: 10px;
+      padding: 20px;
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       flex-direction: column;
       text-align: center;
+      overflow: auto;
     }
   }
 

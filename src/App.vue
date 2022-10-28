@@ -2,20 +2,32 @@
   <div id="app">
 
     <BaseModal v-if="isModalOpen">
+      <input 
+        type="text" 
+        class="search-input" 
+        placeholder="Please type to search."
+        @input="handleSearchInput($event.target.value)"
+      />
       <BaseList
-        :list="userData"
+        :list="searchResults"
       />
     </BaseModal>
     
     <header>
-      <BaseButton> {{ userData.length ? 'Add / Update' : 'Add Stock' }} </BaseButton>
+      <BaseButton @click="isModalOpen = true"> {{ userData.length ? 'Add / Update' : 'Add Stock' }} </BaseButton>
       <BaseButton> Refresh </BaseButton>
     </header>
 
     <main>
-      <BaseList
-        :list="userData"
-      />
+      <div class="listing">
+        <BaseList
+          :list="userData"
+        />
+      </div>
+      <div class="chart">
+        asd
+      </div>
+      
     </main>
 
   </div>
@@ -40,7 +52,10 @@
         return this.$store.getters['portfolio/getUserData']
       },
       portfolioData() {
-        return this.$store.getters['portfolio/portfolioData']
+        return this.$store.getters['portfolio/getPortfolioData']
+      },
+      searchResults() {
+        return this.$store.getters['portfolio/getSearchResults']
       }
     },
     data() {
@@ -51,13 +66,20 @@
     },
     created() {
 
+    //   document.addEventListener('keyup', function (evt) {
+    //     console.log(evt)
+    //     if (evt.key === 'Escape') {
+    //       this.isModalOpen = false
+    //     }
+    // });
+
       this.interval = setInterval(() => { this.fetchPortfolioData() }, 120000000)
 
       this.fetchPortfolioData()
       this.checkUserData()
 
     },
-    destroyed(){
+    beforeDestroy(){
       clearInterval(this.interval)
     },
     methods: {
@@ -72,6 +94,15 @@
         getPortfolioData().then(({ data }) => {
           this.$store.dispatch('portfolio/setPortfolioData', data)
         })
+      },
+      handleSearchInput(input) {
+        if(input.length >= 3) {
+
+          // just mocking the search results by putting a 3 letter condition. 
+          // This can also be a debounced function for better performance.
+
+          this.$store.dispatch('portfolio/setSearchResults', this.portfolioData.filter(item => item.symbol.toLowerCase().includes(input.toLowerCase())))
+        } 
       }
     }
   };
@@ -88,13 +119,15 @@
 
   body, html, #app {
     font-family: Poppins, sans-serif;
+    height: 100vh;
+
+
   }
 
   #app {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    margin-top: 40px;
-    padding: 0 40px;
+    padding: 40px;
 
     .flex-center {
       display: flex;
@@ -106,9 +139,40 @@
       display: flex;
       justify-content: flex-start;
       align-items: center;
-      padding: 0 20px;
       border-bottom: 1px solid #e8e8e8;
-  
+      padding: 10px 0;
+
+      button:not(:last-child) {
+        margin-right: 15px;
+      }
+    }
+
+    .search-input {
+      padding: 10px;
+      outline: none;
+      width: 100%;
+    }
+
+    main {
+      height: calc(100% - 40px);
+      display: flex;
+      justify-content: space-around;
+
+      .listing {
+        border-right: 1px solid #dedede;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-basis: 50%;
+      }
+
+      .chart {
+        flex-basis: 50%;
+      }
+      
+
+     
     }
   }
 

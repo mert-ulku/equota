@@ -5,6 +5,7 @@
       backgroundColor: buttonColor,
       border: `1px solid ${buttonColor}`,
     }"
+    v-on="$listeners"
   >
   <slot name="default"/> 
  </button>
@@ -45,8 +46,6 @@
     cursor: pointer;
     border-radius: 4px;
     font-weight: bold;
-    margin-right: 8px;
-    margin-bottom: 12px;
     outline: none;
 
     &:hover {
