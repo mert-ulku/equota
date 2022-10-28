@@ -1,15 +1,19 @@
 <template>
   <div id="app">
-    
+    <BaseButton>Click</BaseButton>
   </div>
 </template>
 
 <script>
 
   import { getPortfolioData } from './api-helper/portfolio'
+  import BaseButton from '@/components/base/BaseButton.vue'
 
   export default {
     name: "App",
+    components: {
+      BaseButton
+    },
     data() {
       return {
         portfolioData: []
