@@ -47,6 +47,7 @@
     font-weight: bold;
     margin-right: 8px;
     margin-bottom: 12px;
+    outline: none;
 
     &:hover {
       opacity: 0.8;
