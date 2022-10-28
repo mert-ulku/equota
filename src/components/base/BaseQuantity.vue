@@ -5,8 +5,7 @@
     :value="value"
     center
     inline
-    v-on="$listeners"
-    style="z-index: -1"
+    @change="$emit('change', $event)"
   >
   </number-input>
 </template>

@@ -39,12 +39,7 @@ export default {
       commit('setUserData', userData);
     },
     setPortfolioData({ commit }, portfolioData) { 
-      commit('setPortfolioData', portfolioData.map(item => {
-        return {
-          ...item,
-          count: 0
-        }
-      }));
+      commit('setPortfolioData', portfolioData);
     },
     setSearchResults({ commit }, searchResults) { 
       commit('setSearchResults', searchResults);
@@ -52,7 +47,7 @@ export default {
     updateQuantity({state}, {value, symbol}) { 
 
       const foundItem = state.searchResults.find(item => item.symbol === symbol);
-      foundItem.count = value;
+      foundItem.quantity = value;
     },
     addNewUserData({ commit }, userData) { 
       console.log(userData)

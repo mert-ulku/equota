@@ -12,25 +12,28 @@
         :list="searchResults"
       />
     </BaseModal>
-    
+
+  
     <header>
       <BaseButton @click="isModalOpen = true"> {{ userData.length ? 'Add / Update' : 'Add Stock' }} </BaseButton>
       <BaseButton> Refresh </BaseButton>
     </header>
 
     <main>
-      <div class="listing">
-        <BaseList
-          :list="userData"
-        />
+      <div class="listing-wrapper">
+        <div class="listing">
+          <BaseList
+            :list="userData"
+          />
+        </div>
       </div>
       <div class="chart">
         asd
       </div>
       
     </main>
-
   </div>
+  
 </template>
 
 <script>
@@ -75,8 +78,9 @@
 
       this.interval = setInterval(() => { this.fetchPortfolioData() }, 120000000)
 
-      this.fetchPortfolioData()
-      this.checkUserData()
+      this.fetchPortfolioData().then(() => {
+        this.checkUserData()
+      })
 
     },
     beforeDestroy(){
@@ -91,8 +95,20 @@
         }
       },
       fetchPortfolioData() {
-        getPortfolioData().then(({ data }) => {
-          this.$store.dispatch('portfolio/setPortfolioData', data)
+        return new Promise((resolve, reject) => {
+          getPortfolioData().then(({ data }) => {
+            this.$store.dispatch('portfolio/setPortfolioData', data.map(item => {
+              return {
+                ...item,
+                quantity: 0
+              }
+            }))
+            .then(() => {
+              resolve(true)
+            })
+            .catch(error => reject(error))
+          })
+
         })
       },
       handleSearchInput(input) {
@@ -119,32 +135,27 @@
 
   body, html, #app {
     font-family: Poppins, sans-serif;
+  }
+
+  body {
     height: 100vh;
-
-
   }
 
   #app {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: 90px 1fr;
+    height: 100%;
     padding: 40px;
+    padding-bottom: 0;
 
     .flex-center {
       display: flex;
       align-items: center;
       justify-content: center;
-    }
-
-    header {
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      border-bottom: 1px solid #e8e8e8;
-      padding: 10px 0;
-
-      button:not(:last-child) {
-        margin-right: 15px;
-      }
     }
 
     .search-input {
@@ -153,27 +164,43 @@
       width: 100%;
     }
 
-    main {
-      height: calc(100% - 40px);
-      display: flex;
-      justify-content: space-around;
+    header {
+      border-bottom: 1px solid #e8e8e8;
+      padding: 10px;
+      grid-column: 1 / 13;
 
-      .listing {
+      button:not(:last-child) {
+        margin-right: 15px;
+      }
+    }
+
+    main {
+      grid-column: 1 / 13;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+
+      .listing-wrapper {
         border-right: 1px solid #dedede;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-basis: 50%;
+        padding: 10px;
+
+        .listing {
+          height: calc(100vh - 8px);
+          overflow: auto;
+        }
       }
 
       .chart {
-        flex-basis: 50%;
+        align-self: center;
+        justify-self: center;
       }
+
+      
+    }
+    
+
       
 
      
-    }
   }
 
 </style>

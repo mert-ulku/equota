@@ -14,7 +14,7 @@
 
       <div class="list-item-actions">
         <BaseQuantity 
-          v-model="listItem.count"
+          v-model="listItem.quantity"
           @change="handleQuantityChange($event, listItem.symbol)"
         />
         <template v-if="!checkExistingData(listItem)">
@@ -96,11 +96,11 @@
       margin-bottom: 10px;
       transition: all .2s ease-in-out;
       font-size: 14px;
-      min-width: 650px;
+      width: 100%;
   
-      &:hover {
-        background-color: #f5f5f5;
-      }
+      // &:hover {
+      //   background-color: #f5f5f5;
+      // }
 
       .list-item {
         display: flex;
