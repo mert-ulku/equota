@@ -17,7 +17,6 @@ export default {
   },
   mutations: {
     setUserData(state, payload) { 
-      // localStorage.setItem("previousData", JSON.stringify(payload))
       state.userData = payload;
     },
     setPortfolioData(state, payload) { 

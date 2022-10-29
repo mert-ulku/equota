@@ -196,9 +196,6 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     height: 100%;
-    // display: grid;
-    // grid-template-columns: repeat(12, 1fr);
-    // grid-template-rows: 90px 1fr;
     height: 100%;
     padding: 40px;
     padding-bottom: 0;
@@ -222,7 +219,6 @@
     header {
       border-bottom: 1px solid #e8e8e8;
       padding: 10px;
-      // grid-column: 1 / 13;
 
       button:not(:last-child) {
         margin-right: 15px;
@@ -230,9 +226,6 @@
     }
 
     main {
-      // grid-column: 1 / 13;
-      // display: grid;
-      // grid-template-columns: 1fr 1fr;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -256,13 +249,8 @@
         flex-basis: 50%;
 
       }
-
-      
+  
     }
-    
-
-      
-
      
   }
 

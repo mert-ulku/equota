@@ -143,10 +143,6 @@
       transition: all .2s ease-in-out;
       font-size: 14px;
       width: 100%;
-  
-      // &:hover {
-      //   background-color: #f5f5f5;
-      // }
 
       .list-item {
         display: flex;
