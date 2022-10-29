@@ -1,21 +1,27 @@
 <template>
   <div class="list-wrapper">
+    
+    <div v-if="error" class="error">
+      {{ error }}
+    </div>
 
     <div 
-      v-for="listItem in list"
-      :key="listItem.symbol"
+      v-for="(listItem, index) in filteredList"
+      :key="index"
       class="list-item-wrapper"
     >
 
     <div class="list-item">
       <div class="list-item-info">
-        {{ listItem.symbol }} - {{ listItem.lastPrice }}
+        {{ listItem.symbol }} - {{ listItem.lastPrice }} {{ additionalInfo ?  `- ${listItem.weightedAvgPrice}` : '' }}
       </div>
 
       <div class="list-item-actions">
-        <BaseQuantity 
-          v-model="listItem.quantity"
-          @change="handleQuantityChange($event, listItem.symbol)"
+        <input 
+          class="number-input"
+          type="number" 
+          :value="listItem.quantity"
+          @input="handleQuantityChange($event.target.value, listItem.symbol)"
         />
         <template v-if="!checkExistingData(listItem)">
           <NewPortfolioItem
@@ -23,18 +29,11 @@
           />
         </template>
         <template v-else>
-          <UpdatePortfolioItem/>
+          <UpdatePortfolioItem
+            @update="updateItem(listItem)"
+            @remove="removeItem(listItem)"
+          />
         </template>
-        <!-- <BaseButton 
-          type="update"
-        > 
-          Update 
-        </BaseButton>
-        <BaseButton 
-          type="remove"
-        > 
-          Remove 
-        </BaseButton> -->
       </div>
     
     </div>
@@ -46,14 +45,12 @@
 
 <script>
 
-  import BaseQuantity from '@/components/base/BaseQuantity.vue'
   import UpdatePortfolioItem from '@/components/portfolio/UpdatePortfolioItem.vue'
   import NewPortfolioItem from '@/components/portfolio/NewPortfolioItem.vue'
 
   export default {
     name: 'BaseList',
     components: {
-      BaseQuantity,
       UpdatePortfolioItem,
       NewPortfolioItem
     },
@@ -61,22 +58,64 @@
       list: {
         type: Array,
         default: () => []
+      },
+      allowFilter: {
+        type: Boolean,
+        default: false
+      },
+      additionalInfo: {
+        type: Boolean,
+        default: false
+      }
+    },
+    data() {
+      return {
+        error: ''
       }
     },
     computed: {
       userData() {
         return this.$store.getters['portfolio/getUserData']
+      },
+      searchKeyword() {
+        return this.$store.getters['portfolio/getSearchKeyword']
+      },
+      filteredList() {
+
+        // This can be a debounced function or a ~3 letter condition can be applied for better performance.
+
+        if (this.searchKeyword && this.allowFilter) {
+          return this.list.filter(item => item.symbol.toLowerCase().includes(this.searchKeyword.toLowerCase()))
+        }
+
+        return this.list
+        
       }
+    },
+    beforeUnmount() {
+      this.error = ''
     },  
     methods: {
       handleQuantityChange(value, symbol) {
+        this.$emit('quantityChange', value, symbol)
         this.$store.dispatch('portfolio/updateQuantity', { value, symbol })
       },
       checkExistingData(currentItem) {
         return this.userData.some(item => item.symbol === currentItem.symbol)
       },
       addNewItem(item) {
+        if(item.quantity <= 0) {
+          this.error = 'Quantity should be greater than 0.'
+          return
+        }
+        this.error = ''
         this.$store.dispatch('portfolio/addNewUserData', item)
+      },
+      updateItem(item) {
+        this.$store.dispatch('portfolio/updatePortfolioItem', item)
+      },
+      removeItem(item) {
+        this.$store.dispatch('portfolio/removeUserData', item)
       }
     }
   }
@@ -88,6 +127,13 @@
   .list-wrapper {
 
     margin-top: 10px;
+
+    .error {
+      background-color: #faad14;
+      padding: 10px;
+      margin-bottom: 5px;
+      color: #fff;
+    }
     
     .list-item-wrapper {
       padding: 15px;
@@ -112,6 +158,13 @@
         display: flex;
         align-items: center;
         justify-content: space-around;
+
+        .number-input {
+          padding: 5px;
+          width: 70px;
+          outline: none;
+          text-align: center;
+        }
 
         & > *:not(:last-child) {
           margin-right: 10px;

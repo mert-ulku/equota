@@ -1,6 +1,7 @@
 <template>
   <BaseButton 
     type="add"
+    :disabled="disabled"
     @click="$emit('add')"
   >
     Add
@@ -15,6 +16,12 @@
     name: 'NewPortfolioItem',
     components: {
       BaseButton
+    },
+    props: {
+      disabled: {
+        type: Boolean,
+        default: false
+      }
     }
   }
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="modal-container">
+  <div class="modal-container" @click.self="$emit('close')">
     <div class="modal">
      <slot name="default"/>
     </div>
